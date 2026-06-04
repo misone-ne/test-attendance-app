@@ -1,0 +1,13 @@
+config('app.timezone')
+now()
+eexit
+exit
+config('app.timezone')
+now()
+exit
+config('app.timezone')
+now()
+exit
+config('app.timezone')
+now()
+exit

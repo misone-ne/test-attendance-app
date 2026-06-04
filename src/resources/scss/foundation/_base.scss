@@ -1,0 +1,15 @@
+.app-body {
+    margin: 0;
+    min-width: 1400px;
+}
+
+.app-body,
+.app-body * {
+    box-sizing: border-box;
+}
+
+.main {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto 30px;
+}

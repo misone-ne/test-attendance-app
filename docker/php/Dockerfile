@@ -1,5 +1,10 @@
 FROM php:8.3-fpm
 
+ENV TZ=Asia/Tokyo
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
+
 ARG UID=1000
 ARG GID=1000
 
