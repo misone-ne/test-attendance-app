@@ -1,12 +1,21 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// メール認証
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [EmailVerificationPromptController::class, 'index'])
         ->name('verification.notice');
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back();
+    })->middleware(['throttle:6,1'])->name('verification.send');
 
     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
@@ -15,9 +24,35 @@ Route::middleware('auth')->group(function () {
     })->middleware(['signed'])->name('verification.verify');
 });
 
-// 仮
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/attendance', function () {
-        return '勤怠画面';
-    })->name('attendance.index');
+
+    // 勤怠登録
+    Route::get('/attendance', [AttendanceController::class, 'index'])
+        ->name('attendance.index');
+
+    Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])
+        ->name('attendance.clock-in');
+
+    Route::post('/attendance/break-start', [AttendanceController::class, 'breakStart'])
+        ->name('attendance.break-start');
+
+    Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])
+        ->name('attendance.break-end');
+
+    Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])
+        ->name('attendance.clock-out');
+
+
+    // 勤怠一覧
+    Route::get('/attendance/list', [AttendanceController::class, 'list'])
+        ->name('attendance.list');
+
+    // 勤怠詳細
+    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'show'])
+        ->name('attendance.show');
+
+    Route::get('/stamp_correction_request/list', function () {
+        return '申請一覧';
+    })->name('request.index');
 });

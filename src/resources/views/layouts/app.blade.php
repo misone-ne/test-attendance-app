@@ -7,7 +7,7 @@
     @vite(['resources/scss/app.scss'])
 </head>
 
-<body class="app-body">
+<body class="app-body @yield('body-class')">
     <header class="header">
         <div class="header__inner">
             <h1 class="header__logo-title">

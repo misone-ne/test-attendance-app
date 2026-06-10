@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body-class', 'app-body--plain')
+
 @section('title', 'メール認証')
 
 @section('content')
@@ -9,14 +11,13 @@
         メール認証を完了してください。
     </p>
 
-    <form method="POST" action="{{ route('verification.notice') }}">
-        @csrf
+    <div class="erify-email__button-wrapper">
         <a href="http://localhost:8025" target="_blank" class="verify-email__button">
             認証はこちらから
         </a>
-    </form>
+    </div>
 
-    <form method="POST" action="{{ route('verification.notice') }}">
+    <form method="POST" action="{{ route('verification.send') }}">
         @csrf
         <button type="submit" class="verify-email__resend">
             認証メールを再送する
