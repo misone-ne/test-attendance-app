@@ -17,7 +17,7 @@
 
 @section('content')
 <div class="attendance-list">
-    <h2 class="attendance-list__title">勤怠一覧</h2>
+    <h2 class="page-title">勤怠一覧</h2>
 
     <div class="attendance-list__month-nav">
         <a href="{{ route('attendance.list', ['month' => $previousMonth]) }}" class="attendance-list__month-link">

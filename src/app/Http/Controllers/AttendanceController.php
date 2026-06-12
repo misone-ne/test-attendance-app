@@ -171,6 +171,7 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::with(['user', 'breakTimes'])
             ->where('user_id', Auth::id())
+            ->where('id', $id)
             ->findOrFail($id);
 
         return view('attendance.show', compact('attendance'));

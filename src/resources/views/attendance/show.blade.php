@@ -1,0 +1,99 @@
+@extends('layouts.app')
+
+@section('header-nav')
+<nav class="header__nav">
+    <a href="{{ route('attendance.index') }}" class="header__nav-link">勤怠</a>
+    <a href="{{ route('attendance.list') }}" class="header__nav-link">勤怠一覧</a>
+    <a href="#" class="header__nav-link">申請</a>
+
+    <form method="POST" action="{{ route('logout') }}" class="header__logout-form">
+        @csrf
+        <button type="submit" class="header__logout-button">ログアウト</button>
+    </form>
+</nav>
+@endsection
+
+@section('content')
+<div class="attendance-detail">
+
+    <h2 class="page-title">勤怠詳細</h2>
+
+    <form method="POST" action="#" class="attendance-detail__form">
+        @csrf
+
+        <div class="attendance-detail__card">
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    名前
+                </div>
+
+                <div class="attendance-detail__value">
+                    {{ $attendance->user->name }}
+                </div>
+            </div>
+
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    日付
+                </div>
+
+                <div class="attendance-detail__value">
+                    {{ $attendance->work_date->isoFormat('YYYY年') }}
+                </div>
+
+                <div class="attendance-detail__value">
+                    {{ $attendance->work_date->isoFormat('M月D日') }}
+                </div>
+            </div>
+
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    出勤・退勤
+                </div>
+
+                <input type="time" ame="clock_in" value="{{ $attendance->clock_in?->format('H:i') }}" class="attendance-detail__time-input">
+                <span class="attendance-detail__separator">〜</span>
+                <input type="time" name="clock_out" value="{{ $attendance->clock_out?->format('H:i') }}" class="attendance-detail__time-input">
+            </div>
+
+            @foreach ($attendance->breakTimes as $index => $breakTime)
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    休憩{{ $index + 1 }}
+                </div>
+
+                <input type="time" name="breaks[{{ $index }}][break_start]" value="{{ $breakTime->break_start?->format('H:i') }}" class="attendance-detail__time-input">
+                <span class="attendance-detail__separator">〜</span>
+                <input type="time" name="breaks[{{ $index }}][break_end]" value="{{ $breakTime->break_end?->format('H:i') }}" class="attendance-detail__time-input">
+            </div>
+            @endforeach
+
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    休憩{{ $attendance->breakTimes->count() + 1 }}
+                </div>
+
+                <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_start]" class="attendance-detail__time-input">
+                <span class="attendance-detail__separator">〜</span>
+                <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_end]" class="attendance-detail__time-input">
+            </div>
+
+            <div class="attendance-detail__row">
+                <div class="attendance-detail__label">
+                    備考
+                </div>
+
+                <textarea name="note" class="attendance-detail__textarea"></textarea>
+            </div>
+        </div>
+
+        <div class="attendance-detail__actions">
+            <button type="submit" class="attendance-detail__button">
+                修正
+            </button>
+        </div>
+
+    </form>
+
+</div>
+@endsection
