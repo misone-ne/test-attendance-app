@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttendanceCorrectionFormRequest;
 use App\Models\Attendance;
+use App\Models\AttendanceCorrectionBreak;
+use App\Models\AttendanceCorrectionRequest;
 use App\Models\BreakTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -174,6 +177,41 @@ class AttendanceController extends Controller
             ->where('id', $id)
             ->findOrFail($id);
 
-        return view('attendance.show', compact('attendance'));
+        $hasPendingRequest = $attendance->correctionRequests()
+            ->where('status', AttendanceCorrectionRequest::STATUS_PENDING)
+            ->exists();
+
+        return view('attendance.show', compact('attendance', 'hasPendingRequest'));
+    }
+
+    public function storeCorrectionRequest(AttendanceCorrectionFormRequest $request, $id)
+    {
+        $attendance = Attendance::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->findOrFail($id);
+
+        $correctionRequest = AttendanceCorrectionRequest::create([
+            'attendance_id' => $attendance->id,
+            'user_id' => Auth::id(),
+            'requested_clock_in' => $attendance->work_date->format('Y-m-d') . ' ' . $request->clock_in,
+            'requested_clock_out' => $attendance->work_date->format('Y-m-d') . ' ' . $request->clock_out,
+            'note' => $request->note,
+            'status' => AttendanceCorrectionRequest::STATUS_PENDING,
+        ]);
+
+        foreach ($request->input('breaks', []) as $index => $break) {
+            if (empty($break['break_start']) && empty($break['break_end'])) {
+                continue;
+            }
+
+            AttendanceCorrectionBreak::create([
+                'attendance_correction_request_id' => $correctionRequest->id,
+                'requested_break_start' => $attendance->work_date->format('Y-m-d') . ' ' . $break['break_start'],
+                'requested_break_end' => $attendance->work_date->format('Y-m-d') . ' ' . $break['break_end'],
+                'break_order' => $index + 1,
+            ]);
+        }
+
+        return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
 }

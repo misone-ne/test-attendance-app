@@ -4,7 +4,7 @@
 <nav class="header__nav">
     <a href="{{ route('attendance.index') }}" class="header__nav-link">勤怠</a>
     <a href="{{ route('attendance.list') }}" class="header__nav-link">勤怠一覧</a>
-    <a href="#" class="header__nav-link">申請</a>
+    <a href="申請一覧のリンク置く" class="header__nav-link">申請</a>
 
     <form method="POST" action="{{ route('logout') }}" class="header__logout-form">
         @csrf
@@ -18,7 +18,7 @@
 
     <h2 class="page-title">勤怠詳細</h2>
 
-    <form method="POST" action="#" class="attendance-detail__form">
+    <form method="POST" action="{{ route('attendance.correction.store', ['id' => $attendance->id]) }}" class="attendance-detail__form">
         @csrf
 
         <div class="attendance-detail__card">
@@ -51,9 +51,21 @@
                     出勤・退勤
                 </div>
 
-                <input type="time" ame="clock_in" value="{{ $attendance->clock_in?->format('H:i') }}" class="attendance-detail__time-input">
-                <span class="attendance-detail__separator">〜</span>
-                <input type="time" name="clock_out" value="{{ $attendance->clock_out?->format('H:i') }}" class="attendance-detail__time-input">
+                <div class="attendance-detail__input-area">
+                    <div class="attendance-detail__time-group">
+                        <input type="time" name="clock_in" value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}" class="attendance-detail__time-input">
+                        <span class="attendance-detail__separator">〜</span>
+                        <input type="time" name="clock_out" value="{{ old('clock_out', $attendance->clock_out?->format('H:i')) }}" class="attendance-detail__time-input">
+                    </div>
+
+                    @error('clock_in')
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+
+                    @error('clock_out')
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             @foreach ($attendance->breakTimes as $index => $breakTime)
@@ -62,9 +74,19 @@
                     休憩{{ $index + 1 }}
                 </div>
 
-                <input type="time" name="breaks[{{ $index }}][break_start]" value="{{ $breakTime->break_start?->format('H:i') }}" class="attendance-detail__time-input">
-                <span class="attendance-detail__separator">〜</span>
-                <input type="time" name="breaks[{{ $index }}][break_end]" value="{{ $breakTime->break_end?->format('H:i') }}" class="attendance-detail__time-input">
+                <div class="attendance-detail__input-area">
+                    <div class="attendance-detail__time-group">
+                        <input type="time" name="breaks[{{ $index }}][break_start]" value="{{ $breakTime->break_start?->format('H:i') }}" class="attendance-detail__time-input">
+                        <span class="attendance-detail__separator">〜</span>
+                        <input type="time" name="breaks[{{ $index }}][break_end]" value="{{ $breakTime->break_end?->format('H:i') }}" class="attendance-detail__time-input">
+                    </div>
+                    @error("breaks.$index.break_start")
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                    @error('breaks.$index.break_end')
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
             @endforeach
 
@@ -73,9 +95,20 @@
                     休憩{{ $attendance->breakTimes->count() + 1 }}
                 </div>
 
-                <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_start]" class="attendance-detail__time-input">
-                <span class="attendance-detail__separator">〜</span>
-                <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_end]" class="attendance-detail__time-input">
+                <div class="attendance-detail__input-area">
+                    <div class="attendance-detail__time-group">
+                        <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_start]" class="attendance-detail__time-input">
+                        <span class="attendance-detail__separator">〜</span>
+                        <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_end]" class="attendance-detail__time-input">
+                    </div>
+                    @error("breaks." . $attendance->breakTimes->count() . ".break_start")
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                    @error("breaks." . $attendance->breakTimes->count() . ".break_end")
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
             </div>
 
             <div class="attendance-detail__row">
@@ -83,14 +116,23 @@
                     備考
                 </div>
 
-                <textarea name="note" class="attendance-detail__textarea"></textarea>
+                <div class="attendance-detail__input-area">
+                    <textarea name="note" class="attendance-detail__textarea"></textarea>
+                    @error('note')
+                    <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </div>
 
         <div class="attendance-detail__actions">
+            @if ($hasPendingRequest)
+            <p class="form-error">*承認待ちのため修正はできません。</p>
+            @else
             <button type="submit" class="attendance-detail__button">
                 修正
             </button>
+            @endif
         </div>
 
     </form>

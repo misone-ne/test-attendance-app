@@ -208,8 +208,19 @@
         margin: 0 50px;
     }
 
+    &__input-area {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__time-group {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
     &__textarea {
-        width: 340px;
+        width: 380px;
         height: 72px;
         padding: 10px;
         margin: 15px 0;
@@ -223,7 +234,7 @@
     &__actions {
         background-color: #f0eff2;
         text-align: right;
-        padding: 60px 0 0;
+        padding: 30px 0 0;
     }
 
     &__button {
@@ -236,4 +247,12 @@
         border-radius: 5px;
         cursor: pointer;
     }
+}
+
+.form-error {
+    color: #ff0000;
+    opacity: 50%;
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 8px;
 }

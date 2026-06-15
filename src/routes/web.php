@@ -52,6 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'show'])
         ->name('attendance.show');
 
+    // 勤怠修正依頼登録
+    Route::post('/attendance/detail/{id}/correction', [AttendanceController::class, 'storeCorrectionRequest'])
+        ->name('attendance.correction.store');
+
     Route::get('/stamp_correction_request/list', function () {
         return '申請一覧';
     })->name('request.index');
