@@ -214,4 +214,14 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
+
+    public function requestList()
+    {
+        $requests = AttendanceCorrectionRequest::with(['attendance', 'user'])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('attendance.request-list', compact('requests'));
+    }
 }

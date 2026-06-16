@@ -256,3 +256,74 @@
     font-weight: 800;
     margin-top: 8px;
 }
+
+.request-list {
+    padding: 100px 0;
+    max-width: 900px;
+    margin: 0 auto;
+    letter-spacing: 0.15em;
+
+    &__tabs {
+        display: flex;
+        margin-top: 50px;
+        border-bottom: 1px solid #000000;
+    }
+
+    &__tab {
+        padding: 0 40px 12px;
+        color: #000000;
+        font-size: 16px;
+        font-weight: 400;
+        text-decoration: none;
+
+        &--active {
+            font-weight: 700;
+        }
+    }
+
+    &__table {
+        width: 100%;
+        margin-top: 40px;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        table-layout: fixed;
+        border-radius: 10px;
+    }
+
+    &__header {
+        height: 50px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #737373;
+        border-bottom: 3px solid #E1E1E1;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    &__cell {
+        height: 50px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #737373;
+        border-bottom: 2px solid #E1E1E1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    &__header:first-child,
+    &__cell:first-child {
+        text-align: center;
+        padding: 0;
+    }
+
+    &__detail-link {
+        color: #000000;
+        font-weight: 700;
+        text-decoration: none;
+    }
+}
