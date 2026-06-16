@@ -215,13 +215,20 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
 
-    public function requestList()
+    public function requestList(): View
     {
+        $status = request('status', 'pending');
+
+        $requestStatus = $status === 'approved'
+            ? AttendanceCorrectionRequest::STATUS_APPROVED
+            : AttendanceCorrectionRequest::STATUS_PENDING;
+
         $requests = AttendanceCorrectionRequest::with(['attendance', 'user'])
             ->where('user_id', Auth::id())
+            ->where('status', $requestStatus)
             ->latest()
             ->get();
 
-        return view('attendance.request-list', compact('requests'));
+        return view('attendance.request-list', compact('requests', 'status'));
     }
 }

@@ -22,8 +22,15 @@
     <h2 class="page-title">申請一覧</h2>
 
     <div class="request-list__tabs">
-        <a href="#" class="request-list__tab request-list__tab--active">承認待ち</a>
-        <a href="#" class="request-list__tab">承認済み</a>
+        <a href="{{ route('request.index', ['status' => 'pending']) }}"
+            class="request-list__tab {{ $status === 'pending' ? 'request-list__tab--active' : '' }}">
+            承認待ち
+        </a>
+
+        <a href="{{ route('request.index', ['status' => 'approved']) }}"
+            class="request-list__tab {{ $status === 'approved' ? 'request-list__tab--active' : '' }}">
+            承認済み
+        </a>
     </div>
 
     <table class="request-list__table">
