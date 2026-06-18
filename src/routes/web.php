@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ Route::middleware('auth')->group(function () {
     })->middleware(['signed'])->name('verification.verify');
 });
 
-
+// スタッフ用画面
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // 勤怠登録
@@ -58,4 +59,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/stamp_correction_request/list', [AttendanceController::class, 'requestList'])
         ->name('request.index');
+});
+
+// 管理者ログイン
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AdminLoginController::class, 'create'])
+        ->name('admin.login');
+
+    Route::post('/admin/login', [AdminLoginController::class, 'store'])
+        ->name('admin.login.store');
+});
+
+// 管理者側
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/admin/attendance/list', function () {
+        return '
+        <form method="POST" action="' . route('admin.logout') . '">
+            ' . csrf_field() . '
+            <button type="submit">ログアウト</button>
+        </form>
+    ';
+    })->name('admin.attendance.list');
+
+    Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])
+        ->name('admin.logout');
 });
