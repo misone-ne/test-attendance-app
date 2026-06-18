@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '勤怠登録')
+
 @section('header-nav')
 <nav class="header__nav">
     @if ($status === 'finished')

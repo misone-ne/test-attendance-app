@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '申請一覧')
+
 @section('header-nav')
 <nav class="header__nav">
     <a href="{{ route('attendance.index') }}" class="header__nav-link">勤怠</a>
