@@ -23,6 +23,8 @@ return new class extends Migration
             $table->dateTime('clock_in')->nullable();
             $table->dateTime('clock_out')->nullable();
 
+            $table->text('note')->nullable();
+
             $table->timestamps();
 
             // 同一ユーザーの同一日の勤怠レコード重複登録を防止

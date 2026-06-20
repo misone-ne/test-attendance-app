@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -72,14 +73,13 @@ Route::middleware('guest:admin')->group(function () {
 
 // 管理者側
 Route::middleware('auth:admin')->group(function () {
-    Route::get('/admin/attendance/list', function () {
-        return '
-        <form method="POST" action="' . route('admin.logout') . '">
-            ' . csrf_field() . '
-            <button type="submit">ログアウト</button>
-        </form>
-    ';
-    })->name('admin.attendance.list');
+    // 当日勤怠一覧
+    Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index'])
+        ->name('admin.attendance.list');
+
+    // 勤怠詳細
+    Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
+        ->name('admin.attendance.show');
 
     Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])
         ->name('admin.logout');

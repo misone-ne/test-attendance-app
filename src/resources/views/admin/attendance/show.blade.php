@@ -4,14 +4,14 @@
 
 @section('header-nav')
 <nav class="header__nav">
-    <a href="{{ route('attendance.index') }}" class="header__nav-link">勤怠</a>
-    <a href="{{ route('attendance.list') }}" class="header__nav-link">勤怠一覧</a>
-    <a href="{{ route('request.index') }}" class="header__nav-link">申請</a>
+    <a href="{{ route('admin.attendance.list') }}" class="header__nav-link">勤怠一覧</a>
+    <a href="#" class="header__nav-link">スタッフ一覧</a>
+    <a href="#" class="header__nav-link">申請一覧</a>
 
     <form method="POST" action="{{ route('logout') }}" class="header__logout-form">
         @csrf
-        <button type="submit" class="header__logout-button">ログアウト</button>
-    </form>
+        <form method="POST" action="{{ route('admin.logout') }}" class="header__logout-form">ログアウト</button>
+        </form>
 </nav>
 @endsection
 
@@ -20,7 +20,7 @@
 
     <h2 class="page-title">勤怠詳細</h2>
 
-    <form method="POST" action="{{ route('attendance.correction.store', ['id' => $attendance->id]) }}" class="attendance-detail__form">
+    <form method="POST" action="#" class="attendance-detail__form">
         @csrf
 
         <div class="attendance-detail__card">
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="attendance-detail__input-area">
-                    <textarea name="note" class="attendance-detail__textarea">{{ old('note') }}</textarea>
+                    <textarea name="note" class="attendance-detail__textarea">{{ old('note', $attendance->note) }}</textarea>
                     @error('note')
                     <p class="form-error">{{ $message }}</p>
                     @enderror

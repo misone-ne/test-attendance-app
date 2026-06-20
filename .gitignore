@@ -27,4 +27,4 @@ docker/mysql/data
 Thumbs.db
 
 # Bash history
-src/.bash_history
+src/.bash_historysrc/.config/
