@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminAttendanceUpdateRequest;
 use App\Models\AttendanceCorrectionRequest;
 use App\Models\Attendance;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +34,13 @@ class AttendanceController extends Controller
             'previousDate',
             'nextDate'
         ));
+    }
+
+    public function staffList(): View
+    {
+        $users = User::orderBy('id')->get();
+
+        return view('admin.staff.index', compact('users'));
     }
 
     public function show($id): View

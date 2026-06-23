@@ -5,7 +5,7 @@
 @section('header-nav')
 <nav class="header__nav">
     <a href="{{ route('admin.attendance.list') }}" class="header__nav-link">勤怠一覧</a>
-    <a href="#" class="header__nav-link">スタッフ一覧</a>
+    <a href="{{ route('admin.staff.list') }}" class="header__nav-link">スタッフ一覧</a>
     <a href="#" class="header__nav-link">申請一覧</a>
 
     <form method="POST" action="{{ route('admin.logout') }}" class="header__logout-form">

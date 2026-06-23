@@ -77,6 +77,14 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index'])
         ->name('admin.attendance.list');
 
+    // スタッフ一覧
+    Route::get('/admin/staff/list', [AdminAttendanceController::class, 'staffList'])
+        ->name('admin.staff.list');
+
+    // スタッフ別勤怠一覧
+    Route::get('/admin/attendance/staff/{id}', [AdminAttendanceController::class, 'staffAttendanceList'])
+        ->name('admin.staff.attendance.list');
+
     // 勤怠詳細
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.show');
