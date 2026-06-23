@@ -21,19 +21,20 @@
 <div class="attendance-list">
     <h2 class="page-title">勤怠一覧</h2>
 
-    <div class="attendance-list__month-nav">
-        <a href="{{ route('attendance.list', ['month' => $previousMonth]) }}" class="attendance-list__month-link">
+    <div class="attendance-list__nav">
+        <a href="{{ route('attendance.list', ['month' => $previousMonth]) }}" class="attendance-list__link">
             <img src="{{ asset('images/矢印.png') }}" alt="" class="attendance-list__arrow-icon">
-            <span>前月</span></a>
+            <span>前月</span>
+        </a>
 
         <div class="attendance-list__month-center">
             <img src="{{ asset('images/カレンダー.png') }}" alt="" class="attendance-list__calendar-icon">
-            <p class="attendance-list__month">
+            <p class="attendance-list__table-title">
                 {{ $currentMonth->format('Y/m') }}
             </p>
         </div>
 
-        <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}" class="attendance-list__month-link">
+        <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}" class="attendance-list__link">
             <span>翌月</span>
             <img src="{{ asset('images/矢印.png') }}" alt="" class="attendance-list__arrow-icon attendance-list__arrow-icon--next">
         </a>

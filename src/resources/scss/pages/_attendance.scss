@@ -60,10 +60,12 @@
 }
 
 .attendance-list {
+    width: 1200px;
+    margin: 0 auto;
     padding: 60px;
     letter-spacing: 0.15em;
 
-    &__month-nav {
+    &__nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -74,13 +76,13 @@
         background: #fff;
     }
 
-    &__month {
+    &__table-title {
         margin: 0;
-        font-size: 28px;
+        font-size: 20px;
         font-weight: 700;
     }
 
-    &__month-link {
+    &__link {
         color: #737373;
         font-size: 16px;
         font-weight: 700;

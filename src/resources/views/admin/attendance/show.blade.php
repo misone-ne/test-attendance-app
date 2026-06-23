@@ -8,10 +8,12 @@
     <a href="#" class="header__nav-link">スタッフ一覧</a>
     <a href="#" class="header__nav-link">申請一覧</a>
 
-    <form method="POST" action="{{ route('logout') }}" class="header__logout-form">
+    <form method="POST" action="{{ route('admin.logout') }}" class="header__logout-form">
         @csrf
-        <form method="POST" action="{{ route('admin.logout') }}" class="header__logout-form">ログアウト</button>
-        </form>
+        <button type="submit" class="header__logout-button">
+            ログアウト
+        </button>
+    </form>
 </nav>
 @endsection
 
