@@ -81,6 +81,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.show');
 
+    // 勤怠修正
+    Route::put('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
+
     Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])
         ->name('admin.logout');
 });

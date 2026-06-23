@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminAttendanceUpdateRequest;
 use App\Models\AttendanceCorrectionRequest;
 use App\Models\Attendance;
 use Carbon\Carbon;
@@ -44,5 +45,52 @@ class AttendanceController extends Controller
             ->exists();
 
         return view('admin.attendance.show', compact('attendance', 'hasPendingRequest'));
+    }
+
+    public function update(AdminAttendanceUpdateRequest $request, $id)
+    {
+        $attendance = Attendance::findOrFail($id);
+
+        if (
+            $attendance->correctionRequests()
+            ->where('status', AttendanceCorrectionRequest::STATUS_PENDING)
+            ->exists()
+        ) {
+            return back();
+        }
+
+        $workDate = $attendance->work_date->format('Y-m-d');
+
+        $attendance->update([
+            'clock_in' => $workDate . ' ' . $request->clock_in,
+            'clock_out' => $workDate . ' ' . $request->clock_out,
+            'note' => $request->note,
+        ]);
+
+        foreach ($request->input('breaks', []) as $index => $break) {
+
+            // 休憩開始・終了どちらも空ならスキップ
+            if (empty($break['break_start']) && empty($break['break_end'])) {
+                continue;
+            }
+
+            $breakTime = $attendance->breakTimes[$index] ?? null;
+
+            if ($breakTime) {
+
+                $breakTime->update([
+                    'break_start' => $workDate . ' ' . $break['break_start'],
+                    'break_end' => $workDate . ' ' . $break['break_end'],
+                ]);
+            } else {
+
+                $attendance->breakTimes()->create([
+                    'break_start' => $workDate . ' ' . $break['break_start'],
+                    'break_end' => $workDate . ' ' . $break['break_end'],
+                ]);
+            }
+        }
+
+        return back();
     }
 }
