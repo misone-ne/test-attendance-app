@@ -14,6 +14,7 @@ use Illuminate\View\View;
 
 class AttendanceController extends Controller
 {
+
     public function index(Request $request): View
     {
         $date = $request->query('date')
@@ -36,12 +37,14 @@ class AttendanceController extends Controller
         ));
     }
 
+
     public function staffList(): View
     {
         $users = User::orderBy('id')->get();
 
         return view('admin.staff.index', compact('users'));
     }
+
 
     public function show($id): View
     {
@@ -54,6 +57,37 @@ class AttendanceController extends Controller
 
         return view('admin.attendance.show', compact('attendance', 'hasPendingRequest'));
     }
+
+
+    public function staffAttendanceList(Request $request, $id): View
+    {
+        $user = User::findOrFail($id);
+
+        $currentMonth = $request->filled('month')
+            ? Carbon::createFromFormat('Y-m', $request->month)
+            : now();
+
+        $previousMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
+
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(fn($attendance) => $attendance->work_date->format('Y-m-d'));
+
+        $dates = collect();
+
+        for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
+            $dates->push($date->copy());
+        }
+
+        return view('admin.staff.attendance', compact('user', 'currentMonth', 'previousMonth', 'nextMonth', 'attendances', 'dates'));
+    }
+
 
     public function update(AdminAttendanceUpdateRequest $request, $id)
     {
