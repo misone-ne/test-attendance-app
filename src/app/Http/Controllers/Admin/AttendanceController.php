@@ -10,6 +10,7 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AttendanceController extends Controller
@@ -134,5 +135,72 @@ class AttendanceController extends Controller
         }
 
         return back();
+    }
+
+
+    public function requestList(): View
+    {
+        $status = request('status', 'pending');
+
+        $requestStatus = $status === 'approved'
+            ? AttendanceCorrectionRequest::STATUS_APPROVED
+            : AttendanceCorrectionRequest::STATUS_PENDING;
+
+        $requests = AttendanceCorrectionRequest::with(['attendance', 'user'])
+            ->where('status', $requestStatus)
+            ->latest()
+            ->get();
+
+        return view('admin.request.index', compact('requests', 'status'));
+    }
+
+    public function approveShow(int $attendance_correct_request_id): View
+    {
+        $correctionRequest = AttendanceCorrectionRequest::with([
+            'attendance.user',
+            'breaks',
+        ])->findOrFail($attendance_correct_request_id);
+
+        return view('admin.request.approve', compact('correctionRequest'));
+    }
+
+
+    public function approve(int $attendance_correct_request_id)
+    {
+        $correctionRequest = AttendanceCorrectionRequest::with([
+            'attendance.breakTimes',
+            'breaks',
+        ])->findOrFail($attendance_correct_request_id);
+
+        if ($correctionRequest->status === AttendanceCorrectionRequest::STATUS_APPROVED) {
+            return redirect()->route('request.index', ['status' => 'approved']);
+        }
+
+        DB::transaction(function () use ($correctionRequest) {
+            $attendance = $correctionRequest->attendance;
+
+            $attendance->update([
+                'clock_in' => $correctionRequest->requested_clock_in,
+                'clock_out' => $correctionRequest->requested_clock_out,
+                'note' => $correctionRequest->note,
+            ]);
+
+            $attendance->breakTimes()->delete();
+
+            foreach ($correctionRequest->breaks as $break) {
+                $attendance->breakTimes()->create([
+                    'break_start' => $break->requested_break_start,
+                    'break_end' => $break->requested_break_end,
+                ]);
+            }
+
+            $correctionRequest->update([
+                'status' => AttendanceCorrectionRequest::STATUS_APPROVED,
+                'approved_by' => auth('admin')->id(),
+                'approved_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('request.index', ['status' => 'approved']);
     }
 }
