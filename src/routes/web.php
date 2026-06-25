@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
@@ -24,6 +25,12 @@ Route::middleware('auth')->group(function () {
 
         return redirect()->route('attendance.index');
     })->middleware(['signed'])->name('verification.verify');
+});
+
+// 一般ユーザログイン
+Route::middleware('guest')->group(function () {
+    Route::post('/login', [LoginController::class, 'store'])
+        ->name('login.store');
 });
 
 
