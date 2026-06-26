@@ -107,7 +107,7 @@
 
         <div class="attendance-detail__actions">
             @if ($correctionRequest->status === \App\Models\AttendanceCorrectionRequest::STATUS_APPROVED)
-            <button type="button" class="attendance-detail__button" disabled>
+            <button type="button" class="attendance-detail__button attendance-detail__button--completed" disabled>
                 承認済み
             </button>
             @else

@@ -184,7 +184,7 @@ class AttendanceController extends Controller
         ])->findOrFail($attendance_correct_request_id);
 
         if ($correctionRequest->status === AttendanceCorrectionRequest::STATUS_APPROVED) {
-            return redirect()->route('request.index', ['status' => 'approved']);
+            return redirect()->route('admin.request.approve.show', ['attendance_correct_request_id' => $correctionRequest->id,]);
         }
 
         DB::transaction(function () use ($correctionRequest) {
@@ -212,6 +212,6 @@ class AttendanceController extends Controller
             ]);
         });
 
-        return redirect()->route('request.index', ['status' => 'approved']);
+        return redirect()->route('admin.request.approve.show', ['attendance_correct_request_id' => $correctionRequest->id,]);
     }
 }
