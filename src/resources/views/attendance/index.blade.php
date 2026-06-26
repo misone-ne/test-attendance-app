@@ -70,7 +70,7 @@
     <div class="attendance__actions">
         <form method="POST" action="{{ route('attendance.break-end') }}">
             @csrf
-            <button type="submit" class="attendance__button">
+            <button type="submit" class="attendance__button attendance__button--secondary">
                 休憩戻
             </button>
         </form>

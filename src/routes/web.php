@@ -58,6 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'list'])
         ->name('attendance.list');
 
+    // 勤怠詳細（日付指定）
+    Route::get('/attendance/detail/date/{date}', [AttendanceController::class, 'showByDate'])
+        ->name('attendance.show-by-date');
+
     // 勤怠詳細
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'show'])
         ->name('attendance.show');
@@ -95,6 +99,10 @@ Route::middleware('auth:admin')->group(function () {
     // 勤怠詳細
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.show');
+
+    // 勤怠詳細（日付指定）
+    Route::get('/admin/attendance/staff/{user_id}/date/{date}', [AdminAttendanceController::class, 'showByDate'])
+        ->name('admin.attendance.show-by-date');
 
     // 勤怠修正
     Route::put('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])

@@ -13,6 +13,8 @@ use Illuminate\View\View;
 
 class AttendanceController extends Controller
 {
+
+
     public function index(): View
     {
         $now = now();
@@ -21,7 +23,7 @@ class AttendanceController extends Controller
             ->whereDate('work_date', today())
             ->first();
 
-        // 勤怠状況把握
+        // 今日の勤怠情報から現在の勤務ステータスを判定
         if (!$attendance) {
             $status = 'off';
         } elseif ($attendance->clock_out) {
@@ -38,12 +40,14 @@ class AttendanceController extends Controller
         return view('attendance.index', compact('now', 'status'));
     }
 
+
     public function clockIn()
     {
         $attendance = Attendance::where('user_id', Auth::id())
             ->whereDate('work_date', today())
             ->first();
 
+        // 「出勤」は1日1回のみ
         if ($attendance) {
             return redirect()->route('attendance.index');
         }
@@ -56,6 +60,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
 
     public function breakStart()
     {
@@ -74,6 +79,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
 
     public function breakEnd()
     {
@@ -100,6 +106,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
 
     public function clockOut()
     {
@@ -130,6 +137,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
 
     // 勤怠一覧
     public function list(Request $request): View
@@ -170,6 +178,18 @@ class AttendanceController extends Controller
         ));
     }
 
+
+    public function showByDate(string $date)
+    {
+        $attendance = Attendance::firstOrCreate([
+            'user_id' => Auth::id(),
+            'work_date' => $date,
+        ]);
+
+        return redirect()->route('attendance.show', ['id' => $attendance->id]);
+    }
+
+
     public function show($id): View
     {
         $attendance = Attendance::with(['user', 'breakTimes'])
@@ -183,6 +203,7 @@ class AttendanceController extends Controller
 
         return view('attendance.show', compact('attendance', 'hasPendingRequest'));
     }
+
 
     public function storeCorrectionRequest(AttendanceCorrectionFormRequest $request, $id)
     {
@@ -214,6 +235,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
+
 
     public function requestList(): View
     {

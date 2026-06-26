@@ -84,6 +84,10 @@
                     <a href="{{ route('admin.attendance.show', ['id' => $attendance->id]) }}" class="attendance-list__detail-link">
                         詳細
                     </a>
+                    @else
+                    <a href="{{ route('admin.attendance.show-by-date', ['user_id' => $user->id, 'date' => $date->format('Y-m-d')]) }}" class="attendance-list__detail-link">
+                        詳細
+                    </a>
                     @endif
                 </td>
             </tr>

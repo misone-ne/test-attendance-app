@@ -47,6 +47,17 @@ class AttendanceController extends Controller
     }
 
 
+    public function showByDate(int $user_id, string $date)
+    {
+        $attendance = Attendance::firstOrCreate([
+            'user_id' => $user_id,
+            'work_date' => $date,
+        ]);
+
+        return redirect()->route('admin.attendance.show', ['id' => $attendance->id]);
+    }
+
+
     public function show($id): View
     {
         $attendance = Attendance::with(['user', 'breakTimes'])

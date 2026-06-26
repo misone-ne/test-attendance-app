@@ -58,9 +58,9 @@
 
                 <div class="attendance-detail__input-area">
                     <div class="attendance-detail__time-group">
-                        <input type="time" name="clock_in" value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}" class="attendance-detail__time-input">
+                        <input type="time" name="clock_in" value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                         <span class="attendance-detail__separator">〜</span>
-                        <input type="time" name="clock_out" value="{{ old('clock_out', $attendance->clock_out?->format('H:i')) }}" class="attendance-detail__time-input">
+                        <input type="time" name="clock_out" value="{{ old('clock_out', $attendance->clock_out?->format('H:i')) }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                     </div>
 
                     @error('clock_in')
@@ -81,9 +81,9 @@
 
                 <div class="attendance-detail__input-area">
                     <div class="attendance-detail__time-group">
-                        <input type="time" name="breaks[{{ $index }}][break_start]" value="{{ old('breaks.' . $index . '.break_start', $breakTime->break_start?->format('H:i')) }}" class="attendance-detail__time-input">
+                        <input type="time" name="breaks[{{ $index }}][break_start]" value="{{ old('breaks.' . $index . '.break_start', $breakTime->break_start?->format('H:i')) }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                         <span class="attendance-detail__separator">〜</span>
-                        <input type="time" name="breaks[{{ $index }}][break_end]" value="{{ old('breaks.' . $index . '.break_end', $breakTime->break_end?->format('H:i')) }}" class="attendance-detail__time-input">
+                        <input type="time" name="breaks[{{ $index }}][break_end]" value="{{ old('breaks.' . $index . '.break_end', $breakTime->break_end?->format('H:i')) }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                     </div>
                     @error("breaks.$index.break_start")
                     <p class="form-error">{{ $message }}</p>
@@ -95,6 +95,9 @@
             </div>
             @endforeach
 
+            @php
+            $newBreakIndex = $attendance->breakTimes->count();
+            @endphp
             <div class="attendance-detail__row">
                 <div class="attendance-detail__label">
                     休憩{{ $attendance->breakTimes->count() + 1 }}
@@ -102,14 +105,14 @@
 
                 <div class="attendance-detail__input-area">
                     <div class="attendance-detail__time-group">
-                        <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_start]" value="{{ old('breaks.' . $attendance->breakTimes->count() . '.break_start') }}" class="attendance-detail__time-input">
+                        <input type="time" name="breaks[{{ $newBreakIndex }}][break_start]" value="{{ old('breaks.' . $newBreakIndex . '.break_start') }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                         <span class="attendance-detail__separator">〜</span>
-                        <input type="time" name="breaks[{{ $attendance->breakTimes->count() }}][break_end]" value="{{ old('breaks.' . $attendance->breakTimes->count() . '.break_end') }}" class="attendance-detail__time-input">
+                        <input type="time" name="breaks[{{ $newBreakIndex }}][break_end]" value="{{ old('breaks.' . $newBreakIndex . '.break_end') }}" class="attendance-detail__time-input" {{ $hasPendingRequest ? 'disabled' : '' }}>
                     </div>
-                    @error("breaks." . $attendance->breakTimes->count() . ".break_start")
+                    @error("breaks.$newBreakIndex.break_start")
                     <p class="form-error">{{ $message }}</p>
                     @enderror
-                    @error("breaks." . $attendance->breakTimes->count() . ".break_end")
+                    @error("breaks.$newBreakIndex.break_end")
                     <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
@@ -122,7 +125,7 @@
                 </div>
 
                 <div class="attendance-detail__input-area">
-                    <textarea name="note" class="attendance-detail__textarea">{{ old('note', $attendance->note) }}</textarea>
+                    <textarea name="note" class="attendance-detail__textarea" {{ $hasPendingRequest ? 'disabled' : '' }}>{{ old('note', $attendance->note) }}</textarea>
                     @error('note')
                     <p class="form-error">{{ $message }}</p>
                     @enderror
