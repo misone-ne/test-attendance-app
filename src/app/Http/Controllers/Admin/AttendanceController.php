@@ -214,4 +214,55 @@ class AttendanceController extends Controller
 
         return redirect()->route('admin.request.approve.show', ['attendance_correct_request_id' => $correctionRequest->id,]);
     }
+
+
+    public function staffAttendanceCsv(Request $request, int $id)
+    {
+        $currentMonth = $request->filled('month')
+            ? Carbon::createFromFormat('Y-m', $request->month)
+            : now();
+
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $id)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->orderBy('work_date')
+            ->get()
+            ->keyBy(fn($attendance) => $attendance->work_date->format('Y-m-d'));
+
+        $dates = collect();
+
+        for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
+            $dates->push($date->copy());
+        }
+
+        $fileName = 'attendance_' . $id . '_' . $currentMonth->format('Y_m') . '.csv';
+
+        return response()->streamDownload(function () use ($dates, $attendances) {
+            $stream = fopen('php://output', 'w');
+
+            // Excelで文字化けしないようにUTF-8 BOMを付与
+            fwrite($stream, "\xEF\xBB\xBF");
+
+            fputcsv($stream, ['日付', '出勤', '退勤', '休憩', '合計']);
+
+            foreach ($dates as $date) {
+                $attendance = $attendances->get($date->format('Y-m-d'));
+
+                fputcsv($stream, [
+                    $date->isoFormat('MM/DD(ddd)'),
+                    $attendance?->clock_in?->format('H:i') ?? '',
+                    $attendance?->clock_out?->format('H:i') ?? '',
+                    $attendance?->formatted_break_time ?? '',
+                    $attendance?->formatted_work_time ?? '',
+                ]);
+            }
+
+            fclose($stream);
+        }, $fileName, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
 }

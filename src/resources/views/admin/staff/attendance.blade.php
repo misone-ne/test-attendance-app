@@ -94,5 +94,12 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="attendance-list__csv">
+        <a href="{{ route('admin.staff.attendance.csv', ['id' => $user->id, 'month' => $currentMonth->format('Y-m')]) }}"
+            class="attendance-list__csv-button">
+            CSV出力
+        </a>
+    </div>
 </div>
 @endsection

@@ -96,6 +96,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/staff/{id}', [AdminAttendanceController::class, 'staffAttendanceList'])
         ->name('admin.staff.attendance.list');
 
+    // CSV出力
+    Route::get('/admin/attendance/staff/{id}/csv', [AdminAttendanceController::class, 'staffAttendanceCsv'])
+        ->name('admin.staff.attendance.csv');
+
     // 勤怠詳細
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.show');
