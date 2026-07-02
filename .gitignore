@@ -11,6 +11,7 @@ src/.env.production
 src/public/build
 src/public/hot
 src/storage/*.key
+src/.composer/
 
 # Logs
 *.log
