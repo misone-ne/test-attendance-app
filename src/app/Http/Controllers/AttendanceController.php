@@ -253,4 +253,103 @@ class AttendanceController extends Controller
 
         return view('attendance.request-list', compact('requests', 'status'));
     }
+
+    public function report(): View
+    {
+        $userId = Auth::id();
+
+        // 過去6ヶ月の集計対象期間を設定
+        $startMonth = now()->copy()->startOfMonth()->subMonths(5);
+        $endMonth = now()->copy()->endOfMonth();
+
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id', $userId)
+            ->whereBetween('work_date', [$startMonth, $endMonth])
+            ->get();
+
+
+        // 基本サマリーを計算
+        $totalWorkMinutes = $attendances->sum('work_minutes');
+
+        $totalOvertimeMinutes = $attendances->sum(function ($attendance) {
+            return max($attendance->work_minutes - 480, 0);
+        });
+
+        $workedDays = $attendances->filter(fn($attendance) => $attendance->work_minutes > 0)->count();
+
+        $averageWorkMinutes = $workedDays > 0
+            ? floor($totalWorkMinutes / $workedDays)
+            : 0;
+
+
+        // 月別の労働時間・残業時間を集計
+        $monthlyReports = collect();
+
+        for ($month = $startMonth->copy(); $month->lte($endMonth); $month->addMonth()) {
+            $monthlyAttendances = $attendances->filter(function ($attendance) use ($month) {
+                return $attendance->work_date->format('Y-m') === $month->format('Y-m');
+            });
+
+            $monthlyWorkMinutes = $monthlyAttendances->sum('work_minutes');
+
+            $monthlyOvertimeMinutes = $monthlyAttendances->sum(function ($attendance) {
+                return max($attendance->work_minutes - 480, 0);
+            });
+
+            $monthlyReports->push([
+                'month' => $month->format('Y-m'),
+                'work_time' => $this->formatMinutes($monthlyWorkMinutes),
+                'overtime' => $this->formatMinutes($monthlyOvertimeMinutes),
+            ]);
+        }
+
+
+        // 今月の異常検知データを集計
+        $currentMonthAttendances = Attendance::with('breakTimes')
+            ->where('user_id', $userId)
+            ->whereBetween('work_date', [
+                now()->copy()->startOfMonth(),
+                now()->copy()->endOfMonth(),
+            ])
+            ->get();
+
+        $anomalies = [
+            'late_count' => $currentMonthAttendances->filter(function ($attendance) {
+                return $attendance->clock_in
+                    && $attendance->clock_in->format('H:i:s') > '09:00:00';
+            })->count(),
+
+            'early_leave_count' => $currentMonthAttendances->filter(function ($attendance) {
+                return $attendance->clock_out
+                    && $attendance->clock_out->format('H:i:s') < '18:00:00';
+            })->count(),
+
+            'long_work_count' => $currentMonthAttendances->filter(function ($attendance) {
+                return $attendance->work_minutes > 600;
+            })->count(),
+        ];
+
+
+        // 基本サマリーを表示用データに変換
+        $summary = [
+            'total_work_time' => $this->formatMinutes($totalWorkMinutes),
+            'total_overtime' => $this->formatMinutes($totalOvertimeMinutes),
+            'average_work_time' => $this->formatMinutes($averageWorkMinutes),
+        ];
+
+
+        return view('attendance.report', compact('summary', 'monthlyReports', 'anomalies'));
+    }
+
+
+    /**
+     * 分を「〇h 〇m」形式へ変換
+     */
+    private function formatMinutes(int $minutes): string
+    {
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+
+        return "{$hours}h {$remainingMinutes}m";
+    }
 }

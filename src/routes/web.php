@@ -58,6 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'list'])
         ->name('attendance.list');
 
+    // 勤怠レポート
+    Route::get('/attendance/report', [AttendanceController::class, 'report'])
+        ->name('attendance.report');
+
     // 勤怠詳細（日付指定）
     Route::get('/attendance/detail/date/{date}', [AttendanceController::class, 'showByDate'])
         ->name('attendance.show-by-date');

@@ -152,10 +152,10 @@
     }
 
     &__csv {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-}
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+    }
 
     &__csv-button {
         width: 180px;
@@ -362,5 +362,117 @@
         color: #000000;
         font-weight: 700;
         text-decoration: none;
+    }
+}
+
+.attendance-report {
+    width: 900px;
+    margin: 0 auto;
+    padding: 5px 0;
+
+    &__container {
+        width: 100%;
+    }
+
+    &__title {
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    &__text {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    &__card {
+        margin-top: 20px;
+        background-color: transparent;
+    }
+
+    &__card-title {
+        margin: 0 0 24px;
+        color: #000000;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    &__stats{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    &__stats-item {
+        min-height: 70px;
+        padding: 10px 20px;
+        border: 1px solid #F3F3F3;
+        border-radius: 8px;
+        background-color: #FAFAFA;
+    }
+
+    &__stats-label {
+        margin: 0 0 10px;
+        color: #737373;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    &__stats-value {
+        margin: 0;
+        color: #000000;
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    &__anomaly-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: #696969;
+    }
+
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    &__header {
+        height: 50px;
+        color: #000000;
+        font-size: 16px;
+        font-weight: 700;
+        border-bottom: 3px solid #F3F3F3;
+    }
+
+    &__header--month,
+    &__cell--month {
+        width: 55%;
+        text-align: left;
+    }
+
+    &__header--work,
+    &__cell--work {
+        width: 22.5%;
+        text-align: center;
+    }
+
+    &__header--overtime,
+    &__cell--overtime {
+        width: 22.5%;
+        text-align: right;
+    }
+
+    &__cell {
+        height: 50px;
+        color: #000000;
+        font-size: 16px;
+        font-weight: 700;
+        border-bottom: 1px solid #F3F3F3;
+    }
+
+    &__last-row {
+        .attendance-report__cell {
+            border-bottom: none;
+        }
     }
 }
