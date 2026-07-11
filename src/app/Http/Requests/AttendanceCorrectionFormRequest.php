@@ -39,7 +39,7 @@ class AttendanceCorrectionFormRequest extends FormRequest
         return [
             'clock_in.required' => '出勤時間を入力してください',
             'clock_out.required' => '退勤時間を入力してください',
-            'clock_out.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'clock_out.after' => '出勤時間が不適切な値です',
 
             'note.required' => '備考を記入してください',
         ];
