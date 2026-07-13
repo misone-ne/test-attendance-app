@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AttendanceCorrectionRequest extends Model
 {
@@ -20,6 +22,11 @@ class AttendanceCorrectionRequest extends Model
         'approved_at',
     ];
 
+    /**
+     * モデル属性のキャスト設定を定義する。
+     *
+     * @return array<string, string> 属性ごとのキャスト設定
+     */
     protected function casts(): array
     {
         return [
@@ -29,22 +36,42 @@ class AttendanceCorrectionRequest extends Model
         ];
     }
 
-    public function attendance()
+    /**
+     * 勤怠修正申請に紐づく勤怠情報を取得する。
+     *
+     * @return BelongsTo 勤怠情報とのリレーション
+     */
+    public function attendance(): BelongsTo
     {
         return $this->belongsTo(Attendance::class);
     }
 
-    public function user()
+    /**
+     * 勤怠修正申請を行った一般ユーザーを取得する。
+     *
+     * @return BelongsTo 一般ユーザーとのリレーション
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function admin()
+    /**
+     * 勤怠修正申請を承認した管理者を取得する。
+     *
+     * @return BelongsTo 管理者とのリレーション
+     */
+    public function admin(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'approved_by');
     }
 
-    public function breaks()
+    /**
+     * 勤怠修正申請に紐づく休憩時間の修正内容を取得する。
+     *
+     * @return HasMany 休憩時間の修正内容とのリレーション
+     */
+    public function breaks(): HasMany
     {
         return $this->hasMany(AttendanceCorrectionBreak::class);
     }

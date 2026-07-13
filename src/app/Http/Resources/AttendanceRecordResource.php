@@ -8,9 +8,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class AttendanceRecordResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * 勤怠情報をAPIレスポンス用の配列形式へ変換する。
      *
-     * @return array<string, mixed>
+     * @param Request $request 現在のHTTPリクエスト
+     * @return array<string, mixed> APIレスポンス用の勤怠情報
      */
     public function toArray(Request $request): array
     {

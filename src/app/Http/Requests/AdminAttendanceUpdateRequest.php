@@ -9,7 +9,9 @@ use Illuminate\Validation\Validator;
 class AdminAttendanceUpdateRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * このリクエストの実行を許可する。
+     *
+     * @return bool リクエストを許可する場合はtrue
      */
     public function authorize(): bool
     {
@@ -17,9 +19,9 @@ class AdminAttendanceUpdateRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 管理者による勤怠修正時のバリデーションルールを定義する。
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string> バリデーションルール
      */
     public function rules(): array
     {
@@ -30,6 +32,11 @@ class AdminAttendanceUpdateRequest extends FormRequest
         ];
     }
 
+    /**
+     * 管理者による勤怠修正時のバリデーションメッセージを定義する。
+     *
+     * @return array<string, string> バリデーションメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -40,6 +47,12 @@ class AdminAttendanceUpdateRequest extends FormRequest
         ];
     }
 
+    /**
+     * 勤怠修正時の休憩時間が出退勤時間の範囲内であるかを追加検証する。
+     *
+     * @param Validator $validator バリデーション処理を行うValidator
+     * @return void
+     */
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {

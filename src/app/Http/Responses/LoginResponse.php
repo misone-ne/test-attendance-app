@@ -7,7 +7,12 @@ use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
 {
-    // ログイン後の遷移先を指定
+    /**
+     * 一般ユーザーのログイン後に勤怠登録画面へ遷移する。
+     *
+     * @param mixed $request ログイン時のリクエスト
+     * @return RedirectResponse 勤怠登録画面へのリダイレクト
+     */
     public function toResponse($request): RedirectResponse
     {
         return redirect()->route('attendance.index');

@@ -14,7 +14,11 @@ use Illuminate\View\View;
 class AttendanceController extends Controller
 {
 
-
+    /**
+     * 勤怠登録画面を表示し、当日の勤怠情報から現在の勤務ステータスを判定する。
+     *
+     * @return View 勤怠登録画面
+     */
     public function index(): View
     {
         $now = now();
@@ -40,7 +44,11 @@ class AttendanceController extends Controller
         return view('attendance.index', compact('now', 'status'));
     }
 
-
+    /**
+     * ログインユーザーの当日の出勤時刻を登録する。
+     *
+     * @return \Illuminate\Http\RedirectResponse 勤怠登録画面へのリダイレクト
+     */
     public function clockIn()
     {
         $attendance = Attendance::where('user_id', Auth::id())
@@ -61,7 +69,11 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index');
     }
 
-
+    /**
+     * ログインユーザーの当日の休憩開始時刻を登録する。
+     *
+     * @return \Illuminate\Http\RedirectResponse 勤怠登録画面へのリダイレクト
+     */
     public function breakStart()
     {
         $attendance = Attendance::where('user_id', Auth::id())
@@ -80,7 +92,11 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index');
     }
 
-
+    /**
+     * ログインユーザーの進行中の休憩に終了時刻を登録する。
+     *
+     * @return \Illuminate\Http\RedirectResponse 勤怠登録画面へのリダイレクト
+     */
     public function breakEnd()
     {
         $attendance = Attendance::where('user_id', Auth::id())
@@ -107,7 +123,11 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index');
     }
 
-
+    /**
+     * ログインユーザーの当日の退勤時刻を登録する。
+     *
+     * @return \Illuminate\Http\RedirectResponse 勤怠登録画面へのリダイレクト
+     */
     public function clockOut()
     {
         $attendance = Attendance::where('user_id', Auth::id())
@@ -138,8 +158,12 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index');
     }
 
-
-    // 勤怠一覧
+    /**
+     * ログインユーザーの指定月の勤怠情報を取得し、勤怠一覧画面を表示する。
+     *
+     * @param Request $request 表示対象月を含むリクエスト
+     * @return View 勤怠一覧画面
+     */
     public function list(Request $request): View
     {
         // URLのmonth有無で表示対象月を決定
@@ -178,7 +202,12 @@ class AttendanceController extends Controller
         ));
     }
 
-
+    /**
+     * 指定日の勤怠情報を取得または作成し、勤怠詳細画面へ遷移する。
+     *
+     * @param string $date 対象日
+     * @return \Illuminate\Http\RedirectResponse 勤怠詳細画面へのリダイレクト
+     */
     public function showByDate(string $date)
     {
         $attendance = Attendance::firstOrCreate([
@@ -189,7 +218,12 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
 
-
+    /**
+     * ログインユーザーの指定された勤怠情報を取得し、勤怠詳細画面を表示する。
+     *
+     * @param int $id 対象の勤怠ID
+     * @return View 勤怠詳細画面
+     */
     public function show($id): View
     {
         $attendance = Attendance::with(['user', 'breakTimes'])
@@ -204,7 +238,13 @@ class AttendanceController extends Controller
         return view('attendance.show', compact('attendance', 'hasPendingRequest'));
     }
 
-
+    /**
+     * 指定された勤怠情報に対する修正申請と休憩時間の修正内容を登録する。
+     *
+     * @param AttendanceCorrectionFormRequest $request 修正内容を含むリクエスト
+     * @param int $id 対象の勤怠ID
+     * @return \Illuminate\Http\RedirectResponse 勤怠詳細画面へのリダイレクト
+     */
     public function storeCorrectionRequest(AttendanceCorrectionFormRequest $request, $id)
     {
         $attendance = Attendance::where('user_id', Auth::id())
@@ -236,7 +276,11 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.show', ['id' => $attendance->id]);
     }
 
-
+    /**
+     * ログインユーザーの修正申請をステータス別に取得し、申請一覧画面を表示する。
+     *
+     * @return View 修正申請一覧画面
+     */
     public function requestList(): View
     {
         $status = request('status', 'pending');
@@ -254,6 +298,11 @@ class AttendanceController extends Controller
         return view('attendance.request-list', compact('requests', 'status'));
     }
 
+    /**
+     * 過去6か月の勤怠情報を集計し、基本サマリー、月次推移、異常検知結果を表示する。
+     *
+     * @return View マイ勤怠レポート画面
+     */
     public function report(): View
     {
         $userId = Auth::id();
@@ -343,7 +392,10 @@ class AttendanceController extends Controller
 
 
     /**
-     * 分を「〇h 〇m」形式へ変換
+     * 分単位の時間を「〇h 〇m」形式の文字列へ変換する。
+     *
+     * @param int $minutes 変換対象の分数
+     * @return string 時間と分で表した文字列
      */
     private function formatMinutes(int $minutes): string
     {

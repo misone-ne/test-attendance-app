@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class UpdateAttendanceRecordRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * このリクエストの実行を許可する。
+     *
+     * @return bool リクエストを許可する場合はtrue
      */
     public function authorize(): bool
     {
@@ -17,9 +19,9 @@ class UpdateAttendanceRecordRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 勤怠情報更新時の入力内容と、更新対象を除く勤怠日の重複に関するバリデーションルールを定義する。
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string> バリデーションルール
      */
     public function rules(): array
     {
@@ -40,6 +42,11 @@ class UpdateAttendanceRecordRequest extends FormRequest
         ];
     }
 
+    /**
+     * 勤怠情報更新時のバリデーションメッセージを定義する。
+     *
+     * @return array<string, string> バリデーションメッセージ
+     */
     public function messages(): array
     {
         return [

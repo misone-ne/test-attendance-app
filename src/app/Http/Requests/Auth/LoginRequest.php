@@ -8,7 +8,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * このリクエストの実行を許可する。
+     *
+     * @return bool リクエストを許可する場合はtrue
      */
     public function authorize(): bool
     {
@@ -16,9 +18,9 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 一般ユーザーのログイン時のバリデーションルールを定義する。
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string> バリデーションルール
      */
     public function rules(): array
     {
@@ -28,6 +30,11 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * 一般ユーザーのログイン時のバリデーションメッセージを定義する。
+     *
+     * @return array<string, string> バリデーションメッセージ
+     */
     public function messages(): array
     {
         return [

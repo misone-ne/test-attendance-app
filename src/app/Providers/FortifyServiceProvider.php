@@ -23,7 +23,9 @@ use Laravel\Fortify\Fortify;
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Fortifyの認証処理後に使用するレスポンスクラスを登録する。
+     *
+     * @return void
      */
     public function register(): void
     {
@@ -44,7 +46,9 @@ class FortifyServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Fortifyの認証画面、ユーザー処理、レート制限を設定する。
+     *
+     * @return void
      */
     public function boot(): void
     {

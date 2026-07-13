@@ -10,15 +10,9 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
+     * 勤怠情報に対する認可ポリシーを登録する。
+     *
+     * @return void
      */
     public function boot(): void
     {

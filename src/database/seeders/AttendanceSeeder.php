@@ -10,6 +10,11 @@ use Illuminate\Database\Seeder;
 
 class AttendanceSeeder extends Seeder
 {
+    /**
+     * 一般ユーザー2名分の勤怠ダミーデータを登録する。
+     *
+     * @return void
+     */
     public function run(): void
     {
         $user1 = User::where('email', 'user1@example.com')->firstOrFail();
@@ -19,6 +24,12 @@ class AttendanceSeeder extends Seeder
         $this->createUser2Attendances($user2);
     }
 
+    /**
+     * user1用に、勤怠レポートの要件値を再現する過去6か月分の勤怠データを登録する。
+     *
+     * @param User $user 対象の一般ユーザー
+     * @return void
+     */
     private function createUser1Attendances(User $user): void
     {
         // 過去5ヶ月：各月 平日15日
@@ -44,6 +55,12 @@ class AttendanceSeeder extends Seeder
         }
     }
 
+    /**
+     * user2用に、通常勤務・遅刻・早退・残業を含む確認用勤怠データを登録する。
+     *
+     * @param User $user 対象の一般ユーザー
+     * @return void
+     */
     private function createUser2Attendances(User $user): void
     {
         // user2 は実運用に近い確認用データ
@@ -64,6 +81,14 @@ class AttendanceSeeder extends Seeder
         }
     }
 
+    /**
+     * 指定月の平日に、通常勤務の勤怠データを指定件数分登録する。
+     *
+     * @param User $user 対象の一般ユーザー
+     * @param Carbon $month 対象月
+     * @param int $count 登録する勤怠日数
+     * @return void
+     */
     private function createMonthlyWeekdayRecords(User $user, Carbon $month, int $count): void
     {
         $weekdays = $this->getWeekdays($month, $count);
@@ -77,6 +102,13 @@ class AttendanceSeeder extends Seeder
         }
     }
 
+    /**
+     * 指定月の平日から、月内に偏らないよう指定件数の日付を取得する。
+     *
+     * @param Carbon $month 対象月
+     * @param int $count 取得する日数
+     * @return array<int, Carbon> 対象となる平日の日付一覧
+     */
     private function getWeekdays(Carbon $month, int $count): array
     {
         $weekdays = [];
@@ -105,6 +137,14 @@ class AttendanceSeeder extends Seeder
         return $selectedDates;
     }
 
+    /**
+     * 指定された勤務パターンをもとに、勤怠情報と1時間の休憩情報を登録する。
+     *
+     * @param User $user 対象の一般ユーザー
+     * @param Carbon $date 勤怠日
+     * @param array<string, mixed> $pattern 出勤・退勤時刻と備考を含む勤務パターン
+     * @return void
+     */
     private function createAttendanceWithBreak(User $user, Carbon $date, array $pattern): void
     {
         $attendance = Attendance::create([

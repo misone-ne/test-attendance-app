@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Hash;
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * 要件で指定されたメール認証済みの一般ユーザーを登録する。
+     *
+     * @return void
      */
     public function run(): void
     {

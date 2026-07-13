@@ -8,14 +8,20 @@ use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
 use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\Attendance;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class AttendanceRecordController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 検索条件に一致する勤怠情報を一覧で取得する。
+     *
+     * @param IndexAttendanceRecordRequest $request 検索条件を含むリクエスト
+     * @return AnonymousResourceCollection 勤怠情報一覧
      */
-    public function index(IndexAttendanceRecordRequest $request)
+    public function index(IndexAttendanceRecordRequest $request): AnonymousResourceCollection
     {
         $perPage = $request->input('per_page', 20);
 
@@ -37,9 +43,12 @@ class AttendanceRecordController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 認証ユーザーの勤怠情報を新規登録する。
+     *
+     * @param StoreAttendanceRecordRequest $request 登録する勤怠情報を含むリクエスト
+     * @return JsonResponse 登録した勤怠情報を含むJSONレスポンス
      */
-    public function store(StoreAttendanceRecordRequest $request)
+    public function store(StoreAttendanceRecordRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -63,9 +72,12 @@ class AttendanceRecordController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 指定された勤怠情報の詳細を取得する。
+     *
+     * @param Attendance $attendanceRecord 対象の勤怠情報
+     * @return AttendanceRecordResource 勤怠詳細情報
      */
-    public function show(Attendance $attendanceRecord)
+    public function show(Attendance $attendanceRecord): AttendanceRecordResource
     {
         $attendanceRecord->load([
             'user',
@@ -77,9 +89,13 @@ class AttendanceRecordController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 指定された勤怠情報を更新する。
+     *
+     * @param UpdateAttendanceRecordRequest $request 更新する勤怠情報を含むリクエスト
+     * @param Attendance $attendanceRecord 対象の勤怠情報
+     * @return AttendanceRecordResource 更新後の勤怠情報
      */
-    public function update(UpdateAttendanceRecordRequest $request, Attendance $attendanceRecord)
+    public function update(UpdateAttendanceRecordRequest $request, Attendance $attendanceRecord): AttendanceRecordResource
     {
         $this->authorize('update', $attendanceRecord);
 
@@ -101,9 +117,12 @@ class AttendanceRecordController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 指定された勤怠情報を削除する。
+     *
+     * @param Attendance $attendanceRecord 対象の勤怠情報
+     * @return Response 内容を含まないレスポンス
      */
-    public function destroy(Attendance $attendanceRecord)
+    public function destroy(Attendance $attendanceRecord): Response
     {
         $this->authorize('delete', $attendanceRecord);
 

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,9 +20,9 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * Get the attributes that should be cast.
+     * モデル属性のキャスト設定を定義する。
      *
-     * @return array<string, string>
+     * @return array<string, string> 属性ごとのキャスト設定
      */
     protected function casts(): array
     {
@@ -31,7 +32,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function attendances()
+    /**
+     * 一般ユーザーに紐づく勤怠情報を取得する。
+     *
+     * @return HasMany 勤怠情報とのリレーション
+     */
+    public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
     }

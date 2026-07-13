@@ -11,7 +11,9 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * ユーザー、管理者、勤怠情報のSeederを順番に実行する。
+     *
+     * @return void
      */
     public function run(): void
     {

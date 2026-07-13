@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BreakTime extends Model
 {
@@ -15,6 +16,11 @@ class BreakTime extends Model
         'break_end',
     ];
 
+    /**
+     * モデル属性のキャスト設定を定義する。
+     *
+     * @return array<string, string> 属性ごとのキャスト設定
+     */
     protected function casts(): array
     {
         return [
@@ -23,7 +29,12 @@ class BreakTime extends Model
         ];
     }
 
-    public function attendance()
+    /**
+     * 休憩情報に紐づく勤怠情報を取得する。
+     *
+     * @return BelongsTo 勤怠情報とのリレーション
+     */
+    public function attendance(): BelongsTo
     {
         return $this->belongsTo(Attendance::class);
     }
