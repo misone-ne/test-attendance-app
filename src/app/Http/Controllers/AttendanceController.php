@@ -332,25 +332,27 @@ class AttendanceController extends Controller
 
 
         // 月別の労働時間・残業時間を集計
-        $monthlyReports = collect();
+        $monthlyReports = collect(range(0, 5))
+            ->map(function (int $monthOffset) use ($startMonth, $attendances) {
+                $month = $startMonth->copy()->addMonths($monthOffset);
 
-        for ($month = $startMonth->copy(); $month->lte($endMonth); $month->addMonth()) {
-            $monthlyAttendances = $attendances->filter(function ($attendance) use ($month) {
-                return $attendance->work_date->format('Y-m') === $month->format('Y-m');
+                $monthlyAttendances = $attendances->filter(
+                    fn($attendance) =>
+                    $attendance->work_date->format('Y-m') === $month->format('Y-m')
+                );
+
+                $monthlyWorkMinutes = $monthlyAttendances->sum('work_minutes');
+
+                $monthlyOvertimeMinutes = $monthlyAttendances->sum(
+                    fn($attendance) => max($attendance->work_minutes - 480, 0)
+                );
+
+                return [
+                    'month' => $month->format('Y-m'),
+                    'work_time' => $this->formatMinutes($monthlyWorkMinutes),
+                    'overtime' => $this->formatMinutes($monthlyOvertimeMinutes),
+                ];
             });
-
-            $monthlyWorkMinutes = $monthlyAttendances->sum('work_minutes');
-
-            $monthlyOvertimeMinutes = $monthlyAttendances->sum(function ($attendance) {
-                return max($attendance->work_minutes - 480, 0);
-            });
-
-            $monthlyReports->push([
-                'month' => $month->format('Y-m'),
-                'work_time' => $this->formatMinutes($monthlyWorkMinutes),
-                'overtime' => $this->formatMinutes($monthlyOvertimeMinutes),
-            ]);
-        }
 
 
         // 今月の異常検知データを集計

@@ -25,7 +25,7 @@ class AttendanceRecordController extends Controller
     {
         $perPage = $request->input('per_page', 20);
 
-        $attendances = Attendance::with(['user'])
+        $attendances = Attendance::with(['user', 'breakTimes'])
             ->when($request->filled('user_id'), function ($query) use ($request) {
                 $query->where('user_id', $request->user_id);
             })

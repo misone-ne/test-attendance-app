@@ -302,7 +302,7 @@ class AttendanceController extends Controller
 
             fputcsv($stream, ['日付', '出勤', '退勤', '休憩', '合計']);
 
-            foreach ($dates as $date) {
+            $dates->each(function ($date) use ($stream, $attendances) {
                 $attendance = $attendances->get($date->format('Y-m-d'));
 
                 fputcsv($stream, [
@@ -312,7 +312,7 @@ class AttendanceController extends Controller
                     $attendance?->formatted_break_time ?? '',
                     $attendance?->formatted_work_time ?? '',
                 ]);
-            }
+            });
 
             fclose($stream);
         }, $fileName, [
