@@ -27,14 +27,14 @@ Route::middleware('auth')->group(function () {
     })->middleware(['signed'])->name('verification.verify');
 });
 
-// 一般ユーザログイン
+// 一般ユーザーログイン
 Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store'])
         ->name('login.store');
 });
 
 
-// 一般ユーザ用画面
+// 一般ユーザー用画面
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // 勤怠登録
