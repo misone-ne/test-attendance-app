@@ -140,8 +140,8 @@ class AttendanceController extends Controller
 
         if (
             $attendance->correctionRequests()
-            ->where('status', AttendanceCorrectionRequest::STATUS_PENDING)
-            ->exists()
+                ->where('status', AttendanceCorrectionRequest::STATUS_PENDING)
+                ->exists()
         ) {
             return back();
         }

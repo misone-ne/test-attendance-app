@@ -13,7 +13,6 @@ use Illuminate\View\View;
 
 class AttendanceController extends Controller
 {
-
     /**
      * 勤怠登録画面を表示し、当日の勤怠情報から現在の勤務ステータスを判定する。
      *
@@ -316,7 +315,6 @@ class AttendanceController extends Controller
             ->whereBetween('work_date', [$startMonth, $endMonth])
             ->get();
 
-
         // 基本サマリーを計算
         $totalWorkMinutes = $attendances->sum('work_minutes');
 
@@ -330,15 +328,13 @@ class AttendanceController extends Controller
             ? floor($totalWorkMinutes / $workedDays)
             : 0;
 
-
         // 月別の労働時間・残業時間を集計
         $monthlyReports = collect(range(0, 5))
             ->map(function (int $monthOffset) use ($startMonth, $attendances) {
                 $month = $startMonth->copy()->addMonths($monthOffset);
 
                 $monthlyAttendances = $attendances->filter(
-                    fn($attendance) =>
-                    $attendance->work_date->format('Y-m') === $month->format('Y-m')
+                    fn($attendance) => $attendance->work_date->format('Y-m') === $month->format('Y-m')
                 );
 
                 $monthlyWorkMinutes = $monthlyAttendances->sum('work_minutes');
@@ -353,7 +349,6 @@ class AttendanceController extends Controller
                     'overtime' => $this->formatMinutes($monthlyOvertimeMinutes),
                 ];
             });
-
 
         // 今月の異常検知データを集計
         $currentMonthAttendances = Attendance::with('breakTimes')
@@ -380,7 +375,6 @@ class AttendanceController extends Controller
             })->count(),
         ];
 
-
         // 基本サマリーを表示用データに変換
         $summary = [
             'total_work_time' => $this->formatMinutes($totalWorkMinutes),
@@ -388,10 +382,8 @@ class AttendanceController extends Controller
             'average_work_time' => $this->formatMinutes($averageWorkMinutes),
         ];
 
-
         return view('attendance.report', compact('summary', 'monthlyReports', 'anomalies'));
     }
-
 
     /**
      * 分単位の時間を「〇h 〇m」形式の文字列へ変換する。
