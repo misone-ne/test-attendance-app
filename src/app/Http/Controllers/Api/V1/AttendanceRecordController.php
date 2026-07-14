@@ -11,7 +11,6 @@ use App\Models\Attendance;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Http\Request;
 
 class AttendanceRecordController extends Controller
 {
