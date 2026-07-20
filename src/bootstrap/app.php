@@ -17,13 +17,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo(function (Request $request) {
-            if ($request->is('admin/*')) {
-                return route('admin.login');
-            }
+    $middleware->redirectGuestsTo(function (Request $request) {
+        if (
+            $request->is('admin/*') ||
+            $request->is('stamp_correction_request/approve/*')
+        ) {
+            return route('admin.login');
+        }
 
-            return route('login');
-        });
+        return route('login');
+    });
 
         $middleware->redirectUsersTo('/attendance');
     })
